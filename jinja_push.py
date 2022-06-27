@@ -12,15 +12,15 @@ template = env.get_template('template.html')
 
 date = date.today()
 current_year = int(date.year) - 1920
-current_title = int()
+
+if str(current_year)[-1] == '0' or 5 <= int(str(current_year)[-2:]) <= 20:
+    current_title = 'лет'
+elif str(current_year)[-1] in '234':
+    current_title = 'года'
+elif str(current_year)[-1] == '1':
+    current_title = 'год'
 
 rendered_page = template.render(
-    cap1_title="Красная кепка",
-    cap1_text="$ 100.00",
-    cap2_title="Чёрная кепка",
-    cap2_text="$ 120.00",
-    cap3_title="Ещё одна чёрная кепка",
-    cap3_text="$ 90.00",
     current_year=current_year,
     let_god_goda=current_title
 )
