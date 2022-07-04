@@ -6,6 +6,7 @@ from datetime import date
 from collections import defaultdict
 
 import pandas
+
 env = Environment(
     loader=FileSystemLoader('.'),
     autoescape=select_autoescape(['html', 'xml'])
