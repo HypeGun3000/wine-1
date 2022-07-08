@@ -21,13 +21,12 @@ def main():
     from datetime import date
 
     parser = argparse.ArgumentParser(
-        description='Описание что делает программа'
+        description='Какой аргумент нужно указать'
     )
 
-    parser.add_argument('name', help='Название Excel файла, из которого нужно брать данные')
+    parser.add_argument('full_file_name', help='Название Excel файла, из которого нужно брать данные')
     args = parser.parse_args()
-    print(args.name)
-    
+
     date = date.today()
     year_of_winery_creating = 1920
     winery_age = str(date.year - year_of_winery_creating)
@@ -39,7 +38,7 @@ def main():
 
     template = env.get_template('template.html')
 
-    recycled_excel_file = pandas.read_excel('complete_wine_table.xlsx')
+    recycled_excel_file = pandas.read_excel(args.full_file_name)
 
     wines = recycled_excel_file.to_dict(orient='records')
 
