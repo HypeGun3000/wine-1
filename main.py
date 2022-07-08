@@ -1,25 +1,36 @@
-def year_title(year_from_creation):
-    if year_from_creation[-1] == '0' or 5 <= int(year_from_creation[-2:]) <= 20:
-        current_title = 'лет'
-    elif year_from_creation[-1] in '234':
-        current_title = 'года'
-    elif year_from_creation[-1] == '1':
-        current_title = 'год'
-    return current_title
+from http.server import HTTPServer, SimpleHTTPRequestHandler
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+
+from collections import defaultdict
+
+import argparse
+import pandas
+
+
+def calculate_year_title(winery_age):
+    if winery_age[-1] == '0' or 5 <= int(winery_age[-2:]) <= 20:
+        title = 'лет'
+    elif winery_age[-1] in '234':
+        title = 'года'
+    elif winery_age[-1] == '1':
+        title = 'год'
+    return title
 
 
 def main():
-    from http.server import HTTPServer, SimpleHTTPRequestHandler
-    from jinja2 import Environment, FileSystemLoader, select_autoescape
-
-    from collections import defaultdict
     from datetime import date
 
-    import pandas
+    parser = argparse.ArgumentParser(
+        description='Описание что делает программа'
+    )
 
+    parser.add_argument('name', help='Название Excel файла, из которого нужно брать данные')
+    args = parser.parse_args()
+    print(args.name)
+    
     date = date.today()
-    year_of_wine_creating = 1920
-    year_from_creation = str(date.year - year_of_wine_creating)
+    year_of_winery_creating = 1920
+    winery_age = str(date.year - year_of_winery_creating)
 
     env = Environment(
         loader=FileSystemLoader('.'),
@@ -28,19 +39,19 @@ def main():
 
     template = env.get_template('template.html')
 
-    recycled_excel_file = pandas.read_excel('wine3.xlsx')
+    recycled_excel_file = pandas.read_excel('complete_wine_table.xlsx')
 
-    whole_wines = recycled_excel_file.to_dict(orient='records')
+    wines = recycled_excel_file.to_dict(orient='records')
 
-    formated_wines = defaultdict(list)
+    groped_wines = defaultdict(list)
 
-    for wine in whole_wines:
-        formated_wines[wine['Категория']].append(wine)
+    for wine in wines:
+        groped_wines[wine['Категория']].append(wine)
 
     rendered_page = template.render(
-        year_from_creation=year_from_creation,
-        year_word_format=year_title(year_from_creation),
-        formated_wines=formated_wines
+        winery_age=winery_age,
+        calculate_year_title=calculate_year_title(winery_age),
+        groped_wines=groped_wines
     )
 
     with open('index.html', 'w', encoding="utf8") as file:
@@ -48,6 +59,7 @@ def main():
 
     server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
     server.serve_forever()
+
 
 if __name__ == '__main__':
     main()
