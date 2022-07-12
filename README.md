@@ -7,7 +7,7 @@
 - Скачайте код
 - Запустите сайт командой
 ```python
-python3 main.py
+python3 main.py complete_wine_table.xlsx
 ```
 - Перейдите на сайт по адресу [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
